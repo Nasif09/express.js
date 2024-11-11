@@ -2,6 +2,7 @@ const express = require('express');
 
 const { signUp, signIn, validateEmailSignUp } = require('./user.controller');
 const tokenVerify = require('../../middlewares/tokenVerify');
+const fileUpload = require('../../middlewares/fileUpload');
 
 const router = express.Router();
 
@@ -22,6 +23,12 @@ router.post('/sign-in', signIn);
 //   { name: 'profileImage', maxCount: 1 },
 //   { name: 'certificateImage', maxCount: 1 }
 // ]), convertHeicToPng(UPLOADS_FOLDER_USERS), isValidUser, updateProfile);
+router.post('/', fileUpload, (req, res) => {
+    res.status(200).json({
+        message: "File uploaded successfully!",
+        file: req.file, // contains file information
+    });
+});
 // router.delete('/', isValidUser, deleteAccount);
 
 
