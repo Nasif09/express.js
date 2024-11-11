@@ -44,6 +44,23 @@ const sendOTP = async (name, sentTo, purpose) => {
     return true;
   }
 
+
+  const verifyOTP = async (sentTo, purpose, otp) => {
+    const otpData = await OTP.findOne({ sentTo, purpose, otp, expiredAt: { $gt: new Date() }, status: "pending" });
+    
+    if (!otpData) {
+        throw new Error("Invalid or expired OTP"); 
+    }
+
+    otpData.status = 'verified'; 
+    otpData.verifiedAt = new Date();
+    await otpData.save(); // Save the updated OTP document
+
+    return otpData;
+};
+
+
   module.exports = {
-    sendOTP
+    sendOTP,
+    verifyOTP
   }

@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const User = require("./user.model");
-const response = require("./response");
+const response = require("../../helpers/response");
 
 const login = async (email, password) => {
     if (!email || !password) {
@@ -20,7 +20,13 @@ const login = async (email, password) => {
   }
 
 
+  const addUser = async (userData) => {
+    const user = new User(userData);
+    return await user.save();
+  }
+
   module.exports = {
     login,
+    addUser
   }
   

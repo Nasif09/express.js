@@ -4,7 +4,8 @@ var jwt = require('jsonwebtoken');
 
 const response = require("../../helpers/response");
 const User = require("./user.model");
-const { sendOTP } = require('../Otp/otp.service');
+const { sendOTP, verifyOTP } = require('../Otp/otp.service');
+const { addUser } = require('./user.service');
 
 
 //signUp
@@ -26,6 +27,19 @@ const signUp = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(400).json(response({ status: 'Fail', statusCode: '400', type: 'user', message: "Signup Failed", errors: error.message }));
+    }
+}
+
+//validate email for Signup
+const validateEmailSignUp = async(req,res) => {
+    try{
+        var otpPurpose = 'email-verification';
+        await verifyOTP(req.User.email, otpPurpose, req.body.otp);
+        const user = await addUser(req.User);
+        return res.status(201).json(response({ status: 'OK', statusCode: '201', type: 'user', message: "User Registered Successfully", data: user }));
+    }catch(error){
+        console.log(error);
+        return res.status(400).json(response({ status: 'Fail', statusCode: '400', type: 'user', message: "email-verification Failed", errors: error.message }));
     }
 }
 
@@ -62,5 +76,6 @@ const signIn = async(req,res)=>{
 
 module.exports = {
     signUp,
-    signIn
+    signIn,
+    validateEmailSignUp
 }

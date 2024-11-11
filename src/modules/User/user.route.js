@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { signUp, signIn } = require('./user.controller');
+const { signUp, signIn, validateEmailSignUp } = require('./user.controller');
 const tokenVerify = require('../../middlewares/tokenVerify');
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 
 //Sign-up user
 router.post('/sign-up', signUp);
-router.post('/verify-email', tokenVerify, validateEmail);
+router.post('/verify-email', tokenVerify, validateEmailSignUp);
 router.post('/sign-in', signIn);
 // router.post('/forget-password', forgetPassword);
 // router.post('/verify-otp', verifyForgetPasswordOTP);
