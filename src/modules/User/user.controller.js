@@ -4,22 +4,31 @@ var jwt = require('jsonwebtoken');
 
 const response = require("../../helpers/response");
 const User = require("./user.model");
+const { sendOTP } = require('../Otp/otp.service');
+
 
 //signUp
-const signUp = async(req,res)=>{
-    try{
-        const hashedPassword = await bcrypt.hash(req.body.password,10);
-        const newUser = new User({
-            fullName: req.body.fullName,
-            email: req.body.email,
+const signUp = async (req, res) => {
+    try {
+        var { fullName, email, password, role } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        var otpPurpose = 'email-verification';
+        await sendOTP(fullName, email, otpPurpose);
+        const newUser = {
+            fullName: fullName,
+            email: email,
+            role: role,
             password: hashedPassword
-        });
-        await newUser.save();
-        return res.status(201).json(response({ status: 'OK', statusCode: '201', type: 'user', message: "Signup success" }));
-    }catch(error){
+        };
+        const signUpToken = jwt.sign(newUser, process.env.JWT_SECRECT, { expiresIn: '1h' });
+        return res.status(201).json(response({ status: 'OK', statusCode: '201', type: 'user', signUpToken: signUpToken }));
+    } catch (error) {
+        console.log(error)
         return res.status(400).json(response({ status: 'Fail', statusCode: '400', type: 'user', message: "Signup Failed", errors: error.message }));
     }
 }
+
 
 //signIn
 const signIn = async(req,res)=>{

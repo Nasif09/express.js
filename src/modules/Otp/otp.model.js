@@ -5,7 +5,7 @@ const otpSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Receiver source is required'],
   },
-  receiverType: { type: String, enum: ['email', 'phone'], default: 'email' },
+//   receiverType: { type: String, enum: ['email', 'phone'], default: 'email' },
   purpose: { type: String, enum: ['email-verification', 'forget-password'], default: 'email-verification' },
   otp: { type: String, required: [true, 'OTP is must be given'], trim: true },
   expiredAt: { type: Date, required: [true, 'ExpiredAt is must be given'], trim: true },
