@@ -127,9 +127,7 @@ const getUsersById = async(req,res)=>{
 const deleteAccount = async(req,res)=>{
     try{
         const { id } = req.User;
-        console.log("USer1:",req.User);
         const user = await User.findByIdAndDelete(id );
-        console.log("USer2:",user);
         if(!user){
             return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "user not found"}));
         }
