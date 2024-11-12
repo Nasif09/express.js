@@ -104,8 +104,11 @@ const signIn = async(req,res)=>{
 //allUsers
 const allUsers = async(req,res)=>{
     try{
-        //live search
+        //live search & pagination
         const search = req.query.search || '';
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 5;
+
         const searchRegEx = new RegExp('.*'+search+'.*', 'i');
         const filter = {
             role: { $ne: "admin" },
@@ -115,11 +118,19 @@ const allUsers = async(req,res)=>{
             ]
         } 
 
-        const user = await User.find(filter, {password : 0});
+        const user = await User.find(filter, {password : 0}).limit(limit).skip((page-1)*limit);
+        const count = await User.find(filter).countDocuments();
+        const pagination = {
+            TotalPage: Math.ceil(count/limit),
+            CurrentPage: page,
+            PreviousPage: page-1 > 0 ? page-1 : null,
+            NextPage: (page+1) < Math.ceil(count/limit) ? (page+1) : null
+
+        }
         if(!user){
             return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "user not found"}));
         }
-        return res.status(200).json(response({ status: "OK",  statusCode: '200', type: "user", message: 'successfully fetch users',  data: user}));
+        return res.status(200).json(response({ status: "OK",  statusCode: '200', type: "user", message: 'successfully fetch users',  data: user, pagination: pagination}));
     }catch(error){
         return res.status(400).json(response({ status: 'Fail', statusCode: '401', type: 'user', message: "Failed to fetch ", errors: error.message }));
     }
