@@ -76,7 +76,7 @@ const signIn = async(req,res)=>{
         const isValidPassword = await bcrypt.compare(password, user.password);
         if(isValidPassword){
             const payload = { 
-                _id: user._id, 
+                id: user._id, 
                 fullName: user.fullName, 
                 email: user.email, 
                 role: user.role, 
@@ -92,9 +92,59 @@ const signIn = async(req,res)=>{
     }
 }
 
+
+//allUsers
+const allUsers = async(req,res)=>{
+    try{
+        const user = await User.find();
+        if(!user){
+            return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "user not found"}));
+        }
+        return res.status(200).json(response({ status: "OK",  statusCode: '200', type: "user", message: 'successfully fetch users',  data: user}));
+    }catch(error){
+        return res.status(400).json(response({ status: 'Fail', statusCode: '401', type: 'user', message: "Failed to fetch ", errors: error.message }));
+    }
+}
+
+
+
+//allUsers
+const getUsersById = async(req,res)=>{
+    try{
+        const { id } = req.User;
+        const user = await User.findById(id );
+        if(!user){
+            return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "user not found"}));
+        }
+        return res.status(200).json(response({ status: "OK",  statusCode: '200', type: "user", message: 'successfully fetch users',  data: user}));
+    }catch(error){
+        return res.status(400).json(response({ status: 'Fail', statusCode: '401', type: 'user', message: "Failed to fetch ", errors: error.message }));
+    }
+}
+
+
+//deleteAccount
+const deleteAccount = async(req,res)=>{
+    try{
+        const { id } = req.User;
+        console.log("USer1:",req.User);
+        const user = await User.findByIdAndDelete(id );
+        console.log("USer2:",user);
+        if(!user){
+            return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "user not found"}));
+        }
+        return res.status(200).json(response({ status: "OK",  statusCode: '200', type: "user", message: 'users deleted',  data: user}));
+    }catch(error){
+        return res.status(400).json(response({ status: 'Fail', statusCode: '401', type: 'user', message: "Failed to delete ", errors: error.message }));
+    }
+}
+
 module.exports = {
     signUp,
     signIn,
     validateEmailSignUp,
-    updateProfile
+    updateProfile,
+    allUsers,
+    getUsersById,
+    deleteAccount
 }

@@ -1,8 +1,9 @@
 const express = require('express');
 
-const { signUp, signIn, validateEmailSignUp, updateProfile } = require('./user.controller');
+const { signUp, signIn, validateEmailSignUp, updateProfile, allUsers, getUsersById, deleteAccount } = require('./user.controller');
 const tokenVerify = require('../../middlewares/tokenVerify');
 const fileUpload = require('../../middlewares/fileUpload');
+const isValidUser = require('../../middlewares/isValidUser');
 
 const router = express.Router();
 
@@ -10,8 +11,12 @@ const router = express.Router();
 //Sign-up user
 router.post('/sign-up', signUp);
 router.post('/verify-email', tokenVerify, validateEmailSignUp);
-router.post('/sign-in', signIn);
+router.post('/sign-in', signIn); 
 router.post('/', fileUpload, updateProfile);
+router.get('/', allUsers);
+router.get('/id',isValidUser, getUsersById);
+router.delete('/', isValidUser, deleteAccount);
+
 
 // router.post('/forget-password', forgetPassword);
 // router.post('/verify-otp', verifyForgetPasswordOTP);
