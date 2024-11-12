@@ -43,6 +43,24 @@ const validateEmailSignUp = async(req,res) => {
     }
 }
 
+//updateProfile
+const updateProfile = async(req,res) => {
+    try{
+        if(req.files && req.files.length>0){
+            let newUser = new User({
+                image: req.files[0].filename
+            })
+            const userData = await newUser.save();
+            return res.status(201).json(response({ status: 'OK', statusCode: '201', type: 'user', message: "Profile pic uploaded", data: userData }));
+        }else{
+            return res.status(400).json(response({ status: 'Fail', statusCode: '404', type: 'user', message: "file not found", errors: error.message }));
+        }
+    }catch(error){
+        console.log(error);
+        return res.status(400).json(response({ status: 'Fail', statusCode: '400', type: 'user', message: "Profile pic uploaded Failed", errors: error.message }));
+    }
+}
+
 
 //signIn
 const signIn = async(req,res)=>{
@@ -77,5 +95,6 @@ const signIn = async(req,res)=>{
 module.exports = {
     signUp,
     signIn,
-    validateEmailSignUp
+    validateEmailSignUp,
+    updateProfile
 }

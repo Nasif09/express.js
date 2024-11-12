@@ -1,4 +1,5 @@
 const uploader = require("../helpers/fileUploadHelper");
+const response = require("../helpers/response");
 
 function fileUpload(req, res, next) {
     const upload = uploader(
@@ -9,15 +10,9 @@ function fileUpload(req, res, next) {
     );
 
     // Call middleware function
-    upload.single("file")(req, res, (err) => {
+    upload.any()(req, res, (err) => {
         if (err) {
-            res.status(500).json({
-                errors: {
-                    avatar: {
-                        msg: err.message,
-                    },
-                },
-            });
+            return res.status(400).json(response({ status: 'Fail', statusCode: '400', type: 'user', message: "file upload error", errors: err.message }));
         } else {
             next();
         }
