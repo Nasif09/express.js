@@ -83,6 +83,14 @@ const signIn = async(req,res)=>{
                 image: user.image 
             }
             const token = jwt.sign(payload, process.env.JWT_SECRECT, { expiresIn: '1y' });
+
+            //set cookie
+            res.cookie(process.env.COOKIE_NAME, token, {
+                maxAge: process.env.JWT_EXPIRY,
+                httpOnly: true,
+                signed: true
+            })
+
             return res.status(200).json(response({ status: "OK",  statusCode: '200', type: "user", message: 'SignIn-success',  data: user, accessToken: token }));
         }else{
             return res.status(401).json(response({ status: "Invalid",  statusCode: '401', type: "user", message: 'Invalid credentials', errors: error.message }));
@@ -137,6 +145,18 @@ const deleteAccount = async(req,res)=>{
     }
 }
 
+
+
+//logout
+const logout = async(req,res)=>{
+    res.clearCookie(process.env.COOKIE_NAME);
+    res.send("LOgoUt");
+}
+
+
+
+
+
 module.exports = {
     signUp,
     signIn,
@@ -144,5 +164,6 @@ module.exports = {
     updateProfile,
     allUsers,
     getUsersById,
-    deleteAccount
+    deleteAccount,
+    logout
 }
