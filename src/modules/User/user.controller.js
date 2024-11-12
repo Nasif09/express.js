@@ -104,7 +104,17 @@ const signIn = async(req,res)=>{
 //allUsers
 const allUsers = async(req,res)=>{
     try{
-        const user = await User.find();
+        const search = req.query.search || '';
+
+        const searchRegEx = new RegExp('.*'+search+'.*', 'i');
+        const filter = {
+            role: { $ne: "admin" },
+            $or: [
+                {fullName : {$regex: searchRegEx} },
+                {email : {$regex: searchRegEx} }
+            ]
+        } 
+        const user = await User.find(filter);
         if(!user){
             return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "user not found"}));
         }
@@ -146,14 +156,11 @@ const deleteAccount = async(req,res)=>{
 }
 
 
-
 //logout
 const logout = async(req,res)=>{
     res.clearCookie(process.env.COOKIE_NAME);
     res.send("LOgoUt");
 }
-
-
 
 
 

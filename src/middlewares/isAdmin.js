@@ -9,7 +9,7 @@ const isAdmin = (req,res,next)=>{
         if(token){
             const decoded  = jwt.verify(token, process.env.JWT_SECRECT);
             req.User = decoded;
-            if(req.User.role === "admin"){
+            if( req.User.role === "admin"){
                 next();
             }else{
                 return res.json(response({ type: 'user', message: "user is not admin"}));
