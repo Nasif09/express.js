@@ -104,8 +104,8 @@ const signIn = async(req,res)=>{
 //allUsers
 const allUsers = async(req,res)=>{
     try{
+        //live search
         const search = req.query.search || '';
-
         const searchRegEx = new RegExp('.*'+search+'.*', 'i');
         const filter = {
             role: { $ne: "admin" },
@@ -114,7 +114,8 @@ const allUsers = async(req,res)=>{
                 {email : {$regex: searchRegEx} }
             ]
         } 
-        const user = await User.find(filter);
+
+        const user = await User.find(filter, {password : 0});
         if(!user){
             return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "user not found"}));
         }
