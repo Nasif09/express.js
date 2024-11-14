@@ -24,16 +24,14 @@ router.delete('/', isLogin, deleteAccount);
 // router.post('/verify-otp', verifyForgetPasswordOTP);
 // router.post('/reset-password', resetPassword);
 // router.get('/user-details', isValidUser, userDetails);
-// router.get('/', isValidUser, allUsers);
-// router.patch('/change-password', isValidUser, changePassword);
-// router.put('/:id', isValidUser, updateUserByAdmin);
+// router.patch('/change-password', isValidUser, changePassword);  
+
 // router.put('/', uploadUsers.fields([
 //   { name: 'identityImage', maxCount: 1 },
 //   { name: 'profileImage', maxCount: 1 },
 //   { name: 'certificateImage', maxCount: 1 }
 // ]), convertHeicToPng(UPLOADS_FOLDER_USERS), isValidUser, updateProfile);
 
-// router.delete('/', isValidUser, deleteAccount);
 
 
 module.exports = router;

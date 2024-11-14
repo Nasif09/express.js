@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-// const bcrypt = require('bcrypt');
-// require('dotenv').config();
 
 const userSchema = new mongoose.Schema({
   fullName: { type: String, trim: true },
@@ -10,6 +8,12 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['admin', 'user'], default: 'user' },
   //subscription: { type: String, enum: ['Free', 'Premium'], default: 'Free' },
   expiaryDate: { type: Date },
+  cars: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Car"
+    }
+  ]
 },
   {
     timestamps: true
