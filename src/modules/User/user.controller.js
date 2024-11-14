@@ -118,7 +118,7 @@ const allUsers = async(req,res)=>{
             ]
         } 
 
-        const user = await User.find(filter).select({password : 0, _id: 0, __v:0}).limit(limit).skip((page-1)*limit);
+        const user = await User.find(filter).populate("cars").select({password : 0, _id: 0, __v:0}).limit(limit).skip((page-1)*limit);
         const count = await User.find(filter).countDocuments();
         const pagination = {
             TotalPage: Math.ceil(count/limit),

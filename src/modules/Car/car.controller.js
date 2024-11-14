@@ -17,7 +17,7 @@ const addCar = async (req, res) => {
         await User.updateOne({
             _id : req.User.id
         },{
-            $push: {
+            $push: {  ///use to add data in array field
                 cars: car._id
             }
         })
