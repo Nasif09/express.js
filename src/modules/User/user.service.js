@@ -13,10 +13,19 @@ const login = async (email, password) => {
     }
     const isValidPassword = await bcrypt.compare(password, user.password);
     if(isValidPassword){
-        return response({
-            status: "OK", statusCode: "200", type: "user", message: "Password Valid", data: { userId: user._id, email: user.email }
-        });
+        return user;
     }
+  }
+
+const getUserByEmail = async (email) => {
+    if (!email) {
+        return response({message: 'email is required' });
+    }
+    const user = await User.findOne({email});
+    if(!user){
+        return response({ status: 'Not-found', statusCode: '404', type: 'user', message: "No user found", errors: error.message });
+    }
+    return user;
   }
 
 
@@ -27,6 +36,7 @@ const login = async (email, password) => {
 
   module.exports = {
     login,
+    getUserByEmail,
     addUser
   }
   

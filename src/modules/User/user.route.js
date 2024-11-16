@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { signUp, signIn, validateEmailSignUp, updateProfile, allUsers, getUsersById, deleteAccount, logout } = require('./user.controller');
+const { signUp, signIn, validateEmailSignUp, updateProfile, allUsers, getUsersById, deleteAccount, logout, forgetPassword, verifyForgetPassword, resetPassword } = require('./user.controller');
 const tokenVerify = require('../../middlewares/tokenVerify');
 const fileUpload = require('../../middlewares/fileUpload');
 const isAdmin = require('../../middlewares/isAdmin');
@@ -20,9 +20,9 @@ router.get('/id',isLogin, getUsersById);
 router.delete('/', isLogin, deleteAccount);
 
 
-// router.post('/forget-password', forgetPassword);
-// router.post('/verify-otp', verifyForgetPasswordOTP);
-// router.post('/reset-password', resetPassword);
+ router.post('/forget-password', forgetPassword);
+router.post('/verify-forgetPassword', verifyForgetPassword);
+router.post('/reset-password', resetPassword);
 // router.get('/user-details', isValidUser, userDetails);
 // router.patch('/change-password', isValidUser, changePassword);  
 
