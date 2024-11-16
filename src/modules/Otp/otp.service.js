@@ -59,8 +59,20 @@ const sendOTP = async (name, sentTo, purpose) => {
     return otpData;
 };
 
+const deleteOTP = async (email) => {
+  try {
+    var sentTo =email;
+    const otpData =  await OTP.findOne({sentTo});
+    console.log("TokenData",otpData);
+    return await OTP.findByIdAndDelete(otpData._id)
+  } catch (error) {
+    throw error;
+  }
+}
+
 
   module.exports = {
     sendOTP,
-    verifyOTP
+    verifyOTP,
+    deleteOTP
   }

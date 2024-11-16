@@ -18,13 +18,15 @@ router.post('/', fileUpload, updateProfile);
 router.get('/', isAdmin ,allUsers);
 router.get('/id',isLogin, getUsersById);
 router.delete('/', isLogin, deleteAccount);
+
 router.post('/forget-password', forgetPassword);
 router.post('/verify-forgetPassword', verifyForgetPassword);
 router.post('/reset-password', resetPassword);
 
+router.post('/change-password', isLogin, changePassword);  
 
 // router.get('/user-details', isValidUser, userDetails);
-router.post('/change-password',isLogin, changePassword);  
+
 
 // router.put('/', uploadUsers.fields([
 //   { name: 'identityImage', maxCount: 1 },

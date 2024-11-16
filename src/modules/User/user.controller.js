@@ -4,7 +4,7 @@ const crypto = require('crypto');
 
 const response = require("../../helpers/response");
 const User = require("./user.model");
-const { sendOTP, verifyOTP } = require('../Otp/otp.service');
+const { sendOTP, verifyOTP, deleteOTP } = require('../Otp/otp.service');
 const { addUser, getUserByEmail, login } = require('./user.service');
 const { addToken, verifyToken, deleteToken } = require('../Token/token.controller');
 const { use } = require('./user.route');
@@ -38,6 +38,8 @@ const validateEmailSignUp = async (req, res) => {
         var otpPurpose = 'email-verification';
         await verifyOTP(req.User.email, otpPurpose, req.body.otp);
         const user = await addUser(req.User);
+        console.log("test::",user)
+        await deleteOTP(user.email);
         return res.status(201).json(response({ status: 'OK', statusCode: '201', type: 'user', message: "User Registered Successfully", data: user }));
     } catch (error) {
         console.log(error);
@@ -122,6 +124,7 @@ const changePassword = async (req, res) => {
         user.password = hashedPassword;
         const success = await user.save();
         if(success){
+            console.log("SUCCESSFULL");
             return res.status(400).json(response({ status: 'OK', statusCode: '200', type: 'user', message: 'your password has been changed successfully' }));
         }else{
             return res.status(400).json(response({ status: 'Failed', statusCode: '500', type: 'user', message: 'Failed!!', errors: error.message }));
