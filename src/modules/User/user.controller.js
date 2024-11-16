@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const response = require("../../helpers/response");
 const User = require("./user.model");
 const { sendOTP, verifyOTP } = require('../Otp/otp.service');
-const { addUser, getUserByEmail } = require('./user.service');
+const { addUser, getUserByEmail, login } = require('./user.service');
 const { addToken, verifyToken, deleteToken } = require('../Token/token.controller');
 const { use } = require('./user.route');
 
@@ -63,7 +63,6 @@ const forgetPassword = async (req, res) => {
     }
 }
 
-
 // /verifyForgetPassword
 const verifyForgetPassword = async (req, res) => {
     const { email, otp } = req.body;
@@ -111,6 +110,37 @@ const resetPassword = async (req, res) => {
 
 }
 
+//change Password
+const changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const {email } = req.User;
+        password = oldPassword;
+        const user = await login({email, password});
+        console.log("User",user);
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        const success = await user.save();
+        if(success){
+            return res.status(400).json(response({ status: 'OK', statusCode: '200', type: 'user', message: 'your password has been changed successfully' }));
+        }else{
+            return res.status(400).json(response({ status: 'Failed', statusCode: '500', type: 'user', message: 'Failed!!', errors: error.message }));
+        }
+
+        // const isSignIn = await signIn(token.email, oldPassword);
+        // if(isSignIn){
+        //     const user = await getUserByEmail(token.email);
+        //     user.password = newPassword;
+        //     await user.save();
+        //     return json(response({ status: 'OK', statusCode: '200', type: 'user', message: 'your password has been changed successfully' }));
+        // }
+
+    } catch (error) {
+        console.log(error);
+        return json(response({ status: 'Failed', statusCode: '500', type: 'user', message: 'fail to change password', errors: error.message }));
+    }
+}
+
 
 //updateProfile
 const updateProfile = async (req, res) => {
@@ -135,15 +165,9 @@ const updateProfile = async (req, res) => {
 const signIn = async (req, res) => {
     try {
         const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json(response({ status: "OK", statusCode: '200', message: 'login-credentials-required' }));
-        }
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json(response({ status: 'Not-found', statusCode: '404', type: 'user', message: "No user found", errors: error.message }));
-        }
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        if (isValidPassword) {
+
+        const user = await login( {email, password} );
+        if (user) {
             const payload = {
                 id: user._id,
                 fullName: user.fullName,
@@ -250,6 +274,7 @@ module.exports = {
     forgetPassword,
     verifyForgetPassword,
     resetPassword,
+    changePassword,
     signIn,
     validateEmailSignUp,
     updateProfile,
